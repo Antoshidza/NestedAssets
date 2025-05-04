@@ -32,10 +32,14 @@ public class MoveSpeedMuliplier : Effect
 ```
 Having `[NestedAssets]` on `_effects` field makes it appear in inspector like this:
 
-// provide img
+![image](https://github.com/user-attachments/assets/45f7c398-4a0f-4a3c-90a3-f1d5dcae2211)
+
+![image](https://github.com/user-attachments/assets/ea4c0fc2-7a59-4d83-aaf1-165e2689926d)
 
 > **Field you use `[NestedAssets]` on should be an array or list of type derived from `ScriptableObject`. 
 > Field itself should be able to be serialized by unity**
+
+> You can use "sync" button to synchronize all nested objects of target type with list view. Please note that in case where you have multiple lists of the same type with [NestedAssets] "sync" button logic can't differ what asset belongs what list.
 
 ## Why use this?
 While unity pushes us to work with project configuration from editor rather than from code you have probably faced the situation when you want to have 
@@ -63,7 +67,5 @@ you need to open its own inspector, and you can't see all picture at the same ti
 If you work with unity enough time you've probably seen cases where unity gives you polymorphism. For example `RenderFeature`s in URP assets or modificators
 in postprocessing volumes profiles. You also could notice that when you add (for example again) render feature it appears as separate `ScriptableObject` of
 some concrete type but attached to parent object (like foldout list) and also being able to be edited from main object inspector.
-
-// provide image here
 
 **This is what Nested Assets exactly do.**
