@@ -76,8 +76,8 @@ some concrete type but attached to parent object (like foldout list) and also be
 
 ## Support :+1: Contribute :computer: Contact :speech_balloon:
 I wish this project will be helpful for your project! So feel free to send bug reports / pull requests, start discussions / critique, those all are **highly** appreciated!
-You can contact with my [discord account](https://www.discordapp.com/users/219868910223228929)!
+You can reach me [discord](https://www.discordapp.com/users/219868910223228929)!
 
-If you want support, you can use this
+If you want to support me, you can use this
 
 ![image](https://github.com/user-attachments/assets/b9fb3f56-8678-494e-980f-4d8d80c7d865)
