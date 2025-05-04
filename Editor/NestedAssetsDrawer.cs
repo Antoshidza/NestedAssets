@@ -51,6 +51,7 @@ namespace NestedAssets.Editor
             foreach (var type in TypeCache.GetTypesDerivedFrom(elementType)
                          .Where(type => type.IsSubclassOf(typeof(ScriptableObject)))) 
                 menu.AddItem(new GUIContent(type.Name), false, () => AddAsset(property, type));
+            
             _assetsList = new ListView
             {
                 bindingPath = property.propertyPath,
@@ -86,7 +87,13 @@ namespace NestedAssets.Editor
                 showAddRemoveFooter = true,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                overridingAddButtonBehavior = (_, _) => menu.ShowAsContext(),
+                overridingAddButtonBehavior = (_, _) =>
+                {
+                    if(menu.GetItemCount() == 0)
+                        Debug.LogWarning($"No types derived from {elementType!.Name} were found in project.", property.serializedObject.targetObject);
+                    else
+                        menu.ShowAsContext();
+                },
                 headerTitle = property.displayName,
                 showFoldoutHeader = true
             };
