@@ -41,6 +41,8 @@ Having `[NestedAssets]` on `_effects` field makes it appear in inspector like th
 
 > :bulb: Use `[NestedAssets]` for cases where you want to have your object instances per parent object instead of sharing. Like each `Effect` on `Skill` created again for each `Skill` asset instead of being created once and used on multiple skills. Though it is possible to implement for this package.
 
+> :bulb: in `[NestedAsset]` you can specify type you want to use as base for nested assets like this `[NestedAssets(typeof(Effect))]`. It may help if you want to make type selection more concrete (though still can be made just with changing field type)
+
 > :bulb: You can use "sync" button to synchronize all nested objects of target type with list view. Please note that in case where you have multiple lists of the same type with [NestedAssets] "sync" button logic can't differ what asset belongs what list.
 
 ## :monocle_face: Why use this?
