@@ -1,0 +1,18 @@
+{
+    "name": "NestedAssets.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8d1210bd956fa44489aac4855a994c0d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

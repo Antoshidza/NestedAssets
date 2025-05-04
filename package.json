@@ -1,0 +1,11 @@
+{
+  "name": "com.tonymax.nestedassets",
+  "version": "0.0.1",
+  "displayName": "Nested Assets",
+  "author": {
+    "name": "TonyMax",
+    "email": "antoshidza@mail.ru"
+  },
+  "type": "library",
+  "hideInEditor": false
+}
