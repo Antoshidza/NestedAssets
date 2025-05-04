@@ -4,14 +4,14 @@ Allow you to decorate any array or list of `ScriptableObject` derived type field
 are assignable from this type) directly from this field owner inspector. Added objects created nested to field owner object, removed objects automatically 
 destroyed.
 
-## Getting started
-### Install this package via git url
+## :computer: Getting started
+### Install package via git url
 ```
 https://github.com/Antoshidza/NestedAssets.git
 ```
 
 ### Usage
-Let say you have your
+Lets say you have your
 ```csharp
 public class Skill : ScriptableObject
 {
@@ -36,12 +36,14 @@ Having `[NestedAssets]` on `_effects` field makes it appear in inspector like th
 
 ![image](https://github.com/user-attachments/assets/ea4c0fc2-7a59-4d83-aaf1-165e2689926d)
 
-> **Field you use `[NestedAssets]` on should be an array or list of type derived from `ScriptableObject`. 
+> :bulb: **Field you use `[NestedAssets]` on should be an array or list of type derived from `ScriptableObject`.
 > Field itself should be able to be serialized by unity**
 
-> You can use "sync" button to synchronize all nested objects of target type with list view. Please note that in case where you have multiple lists of the same type with [NestedAssets] "sync" button logic can't differ what asset belongs what list.
+> :bulb: Use `[NestedAssets]` for cases where you want to have your object instances per parent object instead of sharing. Like each `Effect` on `Skill` created again for each `Skill` asset instead of being created once and used on multiple skills. Though it is possible to implement for this package.
 
-## Why use this?
+> :bulb: You can use "sync" button to synchronize all nested objects of target type with list view. Please note that in case where you have multiple lists of the same type with [NestedAssets] "sync" button logic can't differ what asset belongs what list.
+
+## :monocle_face: Why use this?
 While unity pushes us to work with project configuration from editor rather than from code you have probably faced the situation when you want to have 
 polymorphism in inspector. You want to assign objects derived from same type but have not the same type themselves. One of the possible solutions could be...
 
