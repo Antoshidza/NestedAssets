@@ -5,8 +5,12 @@ are assignable from this type) directly from this field owner inspector. Added o
 destroyed.
 
 ## Getting started
-// provide info about how to install package
+### Install this package via git url
+```
+https://github.com/Antoshidza/NestedAssets.git
+```
 
+### Usage
 Let say you have your
 ```csharp
 public class Skill : ScriptableObject
