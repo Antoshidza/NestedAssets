@@ -109,26 +109,22 @@ namespace NestedAssets.Editor
                 foreach (var index in indexes) 
                     RemoveCommand(property, index);
             };
-            root.Add(_assetsList);
-
-            var syncButton = new Button
-            {
-                text = "sync",
-                style = { alignSelf = Align.Center }
-            };
-            syncButton.clicked += () => 
-            {
-                if(!EditorUtility.DisplayDialog("Synchronize assets with lists?","Are you sure you want synchronize list with assets?", "Synchronize!", 
-                       "Cancel")) return;
+            _assetsList.RegisterCallback<ContextualMenuPopulateEvent>(evt => 
+            { 
+                evt.menu.AppendAction("Synchronize", _ => 
+                {
+                    if(!EditorUtility.DisplayDialog("Synchronize assets with lists?","Are you sure you want synchronize list with assets?", "Synchronize!", 
+                           "Cancel")) return;
                 
-                property.ClearArray();
-                var mainAsset = property.serializedObject.targetObject;
-                var assetPath = AssetDatabase.GetAssetPath(mainAsset);
-                foreach (var asset in AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath)
-                             .Where(asset => elementType!.IsAssignableFrom(asset.GetType()))) 
-                    AddAssetToArray(property, asset);
-            };
-            root.Add(syncButton);
+                    property.ClearArray();
+                    var mainAsset = property.serializedObject.targetObject;
+                    var assetPath = AssetDatabase.GetAssetPath(mainAsset);
+                    foreach (var asset in AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath)
+                                 .Where(asset => elementType!.IsAssignableFrom(asset.GetType()))) 
+                        AddAssetToArray(property, asset);
+                });
+            });
+            root.Add(_assetsList);
             
             return root;
             
