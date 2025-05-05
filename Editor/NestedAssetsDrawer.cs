@@ -118,6 +118,9 @@ namespace NestedAssets.Editor
             };
             syncButton.clicked += () => 
             {
+                if(!EditorUtility.DisplayDialog("Synchronize assets with lists?","Are you sure you want synchronize list with assets?", "Synchronize!", 
+                       "Cancel")) return;
+                
                 property.ClearArray();
                 var mainAsset = property.serializedObject.targetObject;
                 var assetPath = AssetDatabase.GetAssetPath(mainAsset);
@@ -155,7 +158,9 @@ namespace NestedAssets.Editor
 
         private static void RemoveCommand(SerializedProperty property, int index)
         {
-            Undo.DestroyObjectImmediate(property.GetArrayElementAtIndex(index).objectReferenceValue);
+            var objectRef = property.GetArrayElementAtIndex(index).objectReferenceValue;
+            if(!objectRef) return;
+            Undo.DestroyObjectImmediate(objectRef);
             AssetDatabase.SaveAssets();
         }
     }

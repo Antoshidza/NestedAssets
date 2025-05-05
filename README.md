@@ -11,7 +11,7 @@ https://github.com/Antoshidza/NestedAssets.git
 ```
 
 ### Usage
-Lets say you have your
+Let's say you have your
 ```csharp
 public class Skill : ScriptableObject
 {
@@ -44,6 +44,10 @@ Having `[NestedAssets]` on `_effects` field makes it appear in inspector like th
 > :bulb: in `[NestedAsset]` you can specify type you want to use as base for nested assets like this `[NestedAssets(typeof(Effect))]`. It may help if you want to make type selection more concrete (though still can be made just with changing field type)
 
 > :bulb: You can use "sync" button to synchronize all nested objects of target type with list view. Please note that in case where you have multiple lists of the same type with [NestedAssets] "sync" button logic can't differ what asset belongs what list.
+
+> :exclamation: If you have any deep hierarchy of same types, for example your `Effect` can have another effect with `[NestedAsset]` attribute then be careful due to
+> unity can only have one level of nesting assets, so all your `Effect` assets will appear under main asset despite it's place in hierarchy, in that case using "sync"
+> will invalidate your setup or even can produce infinite loops.
 
 ## :monocle_face: Why use this?
 While unity pushes us to work with project configuration from editor rather than from code you have probably faced the situation when you want to have 
