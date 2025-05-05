@@ -50,7 +50,9 @@ namespace NestedAssets.Editor
 
             foreach (var type in TypeCache.GetTypesDerivedFrom(elementType)
                          .Where(type => type.IsSubclassOf(typeof(ScriptableObject)))) 
-                menu.AddItem(new GUIContent(type.Name), false, () => AddAsset(property, type));
+                AddTypeToMenu(type);
+            if(elementType!.IsClass && !elementType!.IsAbstract)
+                AddTypeToMenu(elementType);
             
             _assetsList = new ListView
             {
@@ -126,6 +128,9 @@ namespace NestedAssets.Editor
             root.Add(syncButton);
             
             return root;
+            
+            void AddTypeToMenu(Type type) =>
+                menu.AddItem(new GUIContent(type.Name), false, () => AddAsset(property, type));
         }
         
         private static void AddAsset(SerializedProperty property, Type assetType)
