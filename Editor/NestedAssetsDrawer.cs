@@ -117,9 +117,8 @@ namespace NestedAssets.Editor
                            "Cancel")) return;
                 
                     property.ClearArray();
-                    var mainAsset = property.serializedObject.targetObject;
-                    var assetPath = AssetDatabase.GetAssetPath(mainAsset);
-                    foreach (var asset in AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath)
+                    foreach (var asset in AssetDatabase
+                                 .LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(property.serializedObject.targetObject))
                                  .Where(asset => elementType!.IsAssignableFrom(asset.GetType()))) 
                         AddAssetToArray(property, asset);
                 });
@@ -155,7 +154,10 @@ namespace NestedAssets.Editor
         private static void RemoveCommand(SerializedProperty property, int index)
         {
             var objectRef = property.GetArrayElementAtIndex(index).objectReferenceValue;
-            if(!objectRef) return;
+            if(!objectRef
+                || !AssetDatabase.IsSubAsset(objectRef) 
+                || !AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(property.serializedObject.targetObject)).Contains(objectRef))
+                return;
             Undo.DestroyObjectImmediate(objectRef);
             AssetDatabase.SaveAssets();
         }
