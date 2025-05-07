@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -19,9 +20,10 @@ namespace NestedAssets.Editor
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var root = new VisualElement();
-            var menu = new GenericMenu();
             var attr = attribute as NestedAssetsAttribute;
             var fieldType = fieldInfo.FieldType;
+
+            #region validate field
 
             if (!fieldType.IsArray && !(fieldType.IsGenericType && typeof(IList).IsAssignableFrom(fieldType)))
             {
@@ -48,12 +50,20 @@ namespace NestedAssets.Editor
                 return root;
             }
 
-            foreach (var type in TypeCache.GetTypesDerivedFrom(elementType)
-                         .Where(type => type.IsSubclassOf(typeof(ScriptableObject)))) 
-                AddTypeToMenu(type);
-            if(elementType!.IsClass && !elementType!.IsAbstract)
-                AddTypeToMenu(elementType);
-            
+            #endregion
+
+            #region create type selection menu
+
+            var types = TypeCache.GetTypesDerivedFrom(elementType).Where(type => type.IsSubclassOf(typeof(ScriptableObject)));
+            if (elementType!.IsClass && !elementType!.IsAbstract)
+                types = types.Append(elementType);
+            var menuAdv = new TypeSelectionMenu(new AdvancedDropdownState(), types) { MinimumSize = new Vector2(250f, 0f) };
+            menuAdv.TypeSelected += type => AddAsset(property, type);
+
+            #endregion
+
+            #region create list view
+
             _assetsList = new ListView
             {
                 bindingPath = property.propertyPath,
@@ -89,13 +99,7 @@ namespace NestedAssets.Editor
                 showAddRemoveFooter = true,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                overridingAddButtonBehavior = (_, _) =>
-                {
-                    if(menu.GetItemCount() == 0)
-                        Debug.LogWarning($"No types derived from {elementType!.Name} were found in project.", property.serializedObject.targetObject);
-                    else
-                        menu.ShowAsContext();
-                },
+                overridingAddButtonBehavior = (_, button) => menuAdv.Show(button.worldBound),
                 headerTitle = property.displayName,
                 showFoldoutHeader = true
             };
@@ -110,27 +114,27 @@ namespace NestedAssets.Editor
                     RemoveCommand(property, index);
             };
             _assetsList.RegisterCallback<ContextualMenuPopulateEvent>(evt => 
-            { 
                 evt.menu.AppendAction("Synchronize", _ => 
                 {
                     if(!EditorUtility.DisplayDialog("Synchronize assets with lists?","Are you sure you want synchronize list with assets?", "Synchronize!", 
                            "Cancel")) return;
-                
+                    
                     property.ClearArray();
                     foreach (var asset in AssetDatabase
                                  .LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(property.serializedObject.targetObject))
                                  .Where(asset => elementType!.IsAssignableFrom(asset.GetType()))) 
                         AddAssetToArray(property, asset);
-                });
-            });
+                }));
+
+            #endregion
+            
             root.Add(_assetsList);
             
             return root;
-            
-            void AddTypeToMenu(Type type) =>
-                menu.AddItem(new GUIContent(type.Name), false, () => AddAsset(property, type));
         }
-        
+
+        #region add / remove asset methods
+
         private static void AddAsset(SerializedProperty property, Type assetType)
         {
             var asset = ScriptableObject.CreateInstance(assetType);
@@ -161,5 +165,7 @@ namespace NestedAssets.Editor
             Undo.DestroyObjectImmediate(objectRef);
             AssetDatabase.SaveAssets();
         }
+        
+        #endregion
     }
 }
