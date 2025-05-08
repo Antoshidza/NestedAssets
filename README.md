@@ -1,6 +1,6 @@
 ﻿# Nested Assets
 
-Allow you to decorate any array or list of `ScriptableObject` derived type field with `[NestedAssets]` attribute to let you add / remove / edit objects (which
+Allow you to decorate any single field, array or list of `ScriptableObject` derived type field with `[NestedAssets]` attribute to let you add / remove / edit objects (which
 are assignable from this type) directly from this field owner inspector. Added objects created nested to field owner object, removed objects automatically 
 destroyed.
 
@@ -11,13 +11,8 @@ https://github.com/Antoshidza/NestedAssets.git
 ```
 
 ### Usage
-Let's say you have your
+Let's say you have your `ScriptableObject` derived classes which you want to use polymorphically.
 ```csharp
-public class Skill : ScriptableObject
-{
-    [SerializedField, NestedAssets] private Effect[] _effects;
-}
-
 public abstract Effect : ScriptableObject { /* base impl */ }
 
 public class Damage : Effect 
@@ -30,25 +25,53 @@ public class MoveSpeedMuliplier : Effect
     [SerializedField] private float _value;
 }
 ```
-Having `[NestedAssets]` on `_effects` field makes it appear in inspector like this:
 
-![image](https://github.com/user-attachments/assets/45f7c398-4a0f-4a3c-90a3-f1d5dcae2211)
+### `[NestedAsset]` attribute
+```csharp
+public class Skill : ScriptableObject
+{
+    [SerializedField, NestedAsset] private Effect _effect;
+}
+```
+Having `[NestedAsset]` attribute on your single field makes it appear like this:
+// provide pic
+
+> :grey_exclamation: **Type of your field should be derived from `ScriptableObject`. Field itself should be able to be serialized by unity.**
+
+> :bulb: You can still assign assets to field manually, by drop asset on field or use.
+
+> :bulb: If asset removed from field isn't a part of main asset (even if it is part of another asset), it won't be destroyed, so you can assign / remove safely.
+
+> :bulb: You can specify type you want to use as base for nested asset like this `[NestedAsset(typeof(Effect))]`.
+> It may help if you want to make type selection more concrete (though still can be made just with changing field type) 
+
+### `[NestedAssetsList]` attribute
+```csharp
+public class Skill : ScriptableObject
+{
+    [SerializedField, NestedAssetsList] private Effect[] _effects;
+}
+```
+Having `[NestedAssetsList]` on `_effects` field makes it appear in inspector like this:
+
+// replace pic
 
 ![image](https://github.com/user-attachments/assets/ea4c0fc2-7a59-4d83-aaf1-165e2689926d)
 
-> :bulb: **Field you use `[NestedAssets]` on should be an array or list of type derived from `ScriptableObject`.
+> :grey_exclamation: **Field you use `[NestedAssetsList]` on should be an array or list of type derived from `ScriptableObject`.
 > Field itself should be able to be serialized by unity**
 
-> :bulb: You can still add assets to lists manually, like you usually do. If asset removed from list isn't part of main asset (even if it is part of another asset), it
-> won't be destroyed, so you can add / remove safely.
+> :bulb: You can use "Synchronize" option in list context menu to synchronize all nested objects of target type with list view. Please note that in case where you have
+> multiple lists of the same type with `[NestedAssetsList]` "Synchronize" logic can't differ what asset belongs what list.
 
-> :bulb: in `[NestedAsset]` you can specify type you want to use as base for nested assets like this `[NestedAssets(typeof(Effect))]`. 
+> :bulb: You can still add assets to lists manually, by drag and drop asset on list.
+
+> :bulb: If asset removed from list isn't part of main asset (even if it is part of another asset), it won't be destroyed, so you can add / remove safely.
+
+> :bulb: You can specify type you want to use as base for nested assets like this `[NestedAssetsList(typeof(Effect))]`. 
 > It may help if you want to make type selection more concrete (though still can be made just with changing field type)
 
-> :bulb: You can use "Synchronize" option in list context menu to synchronize all nested objects of target type with list view. Please note that in case where you have 
-> multiple lists of the same type with [NestedAssets] "Synchronize" logic can't differ what asset belongs what list.
-
-> :exclamation: If you have any deep hierarchy of same types, for example your `Effect` can have another effect with `[NestedAsset]` attribute then be careful due to
+> :exclamation: If you have any deep hierarchy of same types, for example your `Effect` can have another effect with `[NestedAssetsList]` attribute then be careful due to
 > unity can only have one level of nesting assets, so all your `Effect` assets will appear under main asset despite it's place in hierarchy, in that case using 
 > "Synchronize" will invalidate your setup or even can produce infinite loops.
 
