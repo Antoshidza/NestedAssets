@@ -34,7 +34,10 @@ public class Skill : ScriptableObject
 }
 ```
 Having `[NestedAsset]` attribute on your single field makes it appear like this:
-// provide pic
+
+![image](https://github.com/user-attachments/assets/09de1673-6c3a-42e4-a966-52d044c1cb69)
+
+![image](https://github.com/user-attachments/assets/b4176537-bafd-4209-85e6-1f47232f6d5e)
 
 > :grey_exclamation: **Type of your field should be derived from `ScriptableObject`. Field itself should be able to be serialized by unity.**
 
@@ -54,9 +57,9 @@ public class Skill : ScriptableObject
 ```
 Having `[NestedAssetsList]` on `_effects` field makes it appear in inspector like this:
 
-// replace pic
+![image](https://github.com/user-attachments/assets/e0e4d6cb-5532-42be-a13e-e3b8e9b05a12)
 
-![image](https://github.com/user-attachments/assets/ea4c0fc2-7a59-4d83-aaf1-165e2689926d)
+![image](https://github.com/user-attachments/assets/ec8513ef-d861-49b7-9ea7-efbfe5f2f3fb)
 
 > :grey_exclamation: **Field you use `[NestedAssetsList]` on should be an array or list of type derived from `ScriptableObject`.
 > Field itself should be able to be serialized by unity**
