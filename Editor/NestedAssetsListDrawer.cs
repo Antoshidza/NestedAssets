@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -12,15 +10,15 @@ using Object = UnityEngine.Object;
 
 namespace NestedAssets.Editor
 {
-    [CustomPropertyDrawer(typeof(NestedAssetsAttribute), false)]
-    public class NestedAssetsDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(NestedAssetsListAttribute), false)]
+    public class NestedAssetsListDrawer : PropertyDrawer
     {
         private ListView _assetsList;
         
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var root = new VisualElement();
-            var attr = attribute as NestedAssetsAttribute;
+            var attr = attribute as NestedAssetsListAttribute;
             var fieldType = fieldInfo.FieldType;
 
             #region validate field
@@ -52,15 +50,7 @@ namespace NestedAssets.Editor
 
             #endregion
 
-            #region create type selection menu
-
-            var types = TypeCache.GetTypesDerivedFrom(elementType).Where(type => type.IsSubclassOf(typeof(ScriptableObject)));
-            if (elementType!.IsClass && !elementType!.IsAbstract)
-                types = types.Append(elementType);
-            var menuAdv = new TypeSelectionMenu(new AdvancedDropdownState(), types) { MinimumSize = new Vector2(250f, 0f) };
-            menuAdv.TypeSelected += type => AddAsset(property, type);
-
-            #endregion
+            var typeSelectionMenu = TypeSelectionMenu.Create(elementType, type => AddAsset(property, type));
 
             #region create list view
 
@@ -99,7 +89,7 @@ namespace NestedAssets.Editor
                 showAddRemoveFooter = true,
                 showAlternatingRowBackgrounds = AlternatingRowBackground.All,
                 virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight,
-                overridingAddButtonBehavior = (_, button) => menuAdv.Show(button.worldBound),
+                overridingAddButtonBehavior = (_, button) => typeSelectionMenu.Show(button.worldBound),
                 headerTitle = property.displayName,
                 showFoldoutHeader = true
             };
@@ -111,7 +101,7 @@ namespace NestedAssets.Editor
             _assetsList.itemsRemoved += indexes =>
             {
                 foreach (var index in indexes) 
-                    RemoveCommand(property, index);
+                    RemoveAssetAt(property, index);
             };
             _assetsList.RegisterCallback<ContextualMenuPopulateEvent>(evt => 
                 evt.menu.AppendAction("Synchronize", _ => 
@@ -135,17 +125,8 @@ namespace NestedAssets.Editor
 
         #region add / remove asset methods
 
-        private static void AddAsset(SerializedProperty property, Type assetType)
-        {
-            var asset = ScriptableObject.CreateInstance(assetType);
-            asset.name = assetType.Name;
-            
-            AssetDatabase.AddObjectToAsset(asset, property.serializedObject.targetObject);
-            AssetDatabase.SaveAssets();
-            EditorUtility.SetDirty(property.serializedObject.targetObject);
-            
-            AddAssetToArray(property, asset);
-        }
+        private static void AddAsset(SerializedProperty property, Type assetType) => 
+            AddAssetToArray(property, assetType.CreateAsset(property.serializedObject.targetObject));
 
         private static void AddAssetToArray(SerializedProperty property, Object asset)
         {
@@ -155,17 +136,9 @@ namespace NestedAssets.Editor
             insertedElement.serializedObject.ApplyModifiedProperties();
         }
 
-        private static void RemoveCommand(SerializedProperty property, int index)
-        {
-            var objectRef = property.GetArrayElementAtIndex(index).objectReferenceValue;
-            if(!objectRef
-                || !AssetDatabase.IsSubAsset(objectRef) 
-                || !AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(property.serializedObject.targetObject)).Contains(objectRef))
-                return;
-            Undo.DestroyObjectImmediate(objectRef);
-            AssetDatabase.SaveAssets();
-        }
-        
+        private static void RemoveAssetAt(SerializedProperty property, int index) => 
+            property.RemoveNestedAsset(property.GetArrayElementAtIndex(index).objectReferenceValue);
+
         #endregion
     }
 }

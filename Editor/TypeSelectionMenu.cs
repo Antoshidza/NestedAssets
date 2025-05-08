@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
@@ -40,6 +41,16 @@ namespace NestedAssets.Editor
         {
             TypeSelected?.Invoke(_typeMap[item.id]);
             base.ItemSelected(item);
+        }
+
+        public static TypeSelectionMenu Create(Type baseType, Action<Type> onTypeSelected)
+        {
+            var types = TypeCache.GetTypesDerivedFrom(baseType).Where(type => type.IsSubclassOf(typeof(ScriptableObject)));
+            if (baseType!.IsClass && !baseType!.IsAbstract)
+                types = types.Append(baseType);
+            var menu = new TypeSelectionMenu(new AdvancedDropdownState(), types) { MinimumSize = new Vector2(250f, 0f) };
+            menu.TypeSelected += onTypeSelected;
+            return menu;
         }
     }
 }
