@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -21,7 +22,13 @@ namespace NestedAssets.Editor
             var propId = property.GetStableId();
 
             var attr = attribute as NestedAssetAttribute;
-            var baseType = attr!.Type != null ? attr.Type : fieldInfo.FieldType;
+            var baseType = attr!.Type != null 
+                ? attr.Type
+                : fieldInfo.FieldType.IsArray 
+                    ? fieldInfo.FieldType.GetElementType()
+                    : fieldInfo.FieldType.IsGenericType && typeof(IList).IsAssignableFrom(fieldInfo.FieldType) 
+                        ? fieldInfo.FieldType.GetGenericArguments()[0]
+                        : fieldInfo.FieldType;
             
             if (!typeof(Object).IsAssignableFrom(baseType))
                 return root;

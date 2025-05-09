@@ -1,10 +1,11 @@
 {
   "name": "com.tonymax.nestedassets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Nested Assets",
   "author": {
     "email": "antoshidza@mail.ru"
   },
   "type": "library",
-  "hideInEditor": false
+  "hideInEditor": false,
+  "description": "PropertyDrawer to easily add / remove / edit of single / array / list of ScriptableObjects polymorphically"
 }
