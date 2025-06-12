@@ -41,7 +41,7 @@ Having `[NestedAsset]` attribute on your single field makes it appear like this:
 
 > :grey_exclamation: **Type of your field should be derived from `ScriptableObject`. Field itself should be able to be serialized by unity.**
 
-> :bulb: You can still assign assets to field manually, by drop asset on field or use.
+> :bulb: You can still assign assets to field manually, by drop asset on field.
 
 > :bulb: If asset removed from field isn't a part of main asset (even if it is part of another asset), it won't be destroyed, so you can assign / remove safely.
 
