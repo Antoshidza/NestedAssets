@@ -20,16 +20,19 @@ namespace NestedAssets
             return asset;
         }
 
-        public static void RemoveNestedAsset(this SerializedProperty property, Object asset)
+        public static void RemoveNestedAsset(this Object parent, Object asset)
         {
             if(!asset
                || !AssetDatabase.IsSubAsset(asset) 
-               || !AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(property.serializedObject.targetObject)).Contains(asset))
+               || !AssetDatabase.LoadAllAssetRepresentationsAtPath(AssetDatabase.GetAssetPath(parent)).Contains(asset))
                 return;
             Undo.DestroyObjectImmediate(asset);
             AssetDatabase.SaveAssets();
         }
-        
+
+        public static void RemoveNestedAsset(this SerializedProperty property, Object asset) => 
+            property.serializedObject.targetObject.RemoveNestedAsset(asset);
+
         public static string GetStableId(this SerializedProperty property)
         {
             var assetGuid = string.Empty;
