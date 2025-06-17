@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace NestedAssets.Editor
+namespace NestedAssets
 {
     public static class NestedAssets
     {
