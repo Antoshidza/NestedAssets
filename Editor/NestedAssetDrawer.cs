@@ -43,7 +43,7 @@ namespace NestedAssets.Editor
             {
                 if (root.childCount == 0 || root[0].childCount < 2)
                 {
-                    Debug.LogWarning($"NestedAssets: seems that {nameof(PropertyField)} have unexpected hierarchy, so can't setup properly");
+                    Debug.LogWarning($"NestedAssets: seems that {nameof(PropertyField)} {property.name} have unexpected hierarchy, so can't setup properly");
                     return;
                 }
                 

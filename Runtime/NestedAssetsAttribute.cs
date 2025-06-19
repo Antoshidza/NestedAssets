@@ -7,7 +7,12 @@ namespace NestedAssets
     public class NestedAssetsListAttribute : PropertyAttribute
     {
         public readonly Type Type;
+        public readonly bool RemoveCascade;
 
-        public NestedAssetsListAttribute(Type type = null) : base(applyToCollection: true) => Type = type;
+        public NestedAssetsListAttribute(Type type = null, bool removeCascade = true) : base(applyToCollection: true)
+        {
+            Type = type;
+            RemoveCascade = removeCascade;
+        }
     }
 }
